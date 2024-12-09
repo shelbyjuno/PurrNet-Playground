@@ -15,42 +15,15 @@ public class LobbyUI : MonoBehaviour
 
     void Awake()
     {
-        lobbyManager.playerIDs.onChanged += OnPlayerIDsChanged;
-        lobbyManager.playerReadyStates.onChanged += OnPlayerReadyStatesChanged;
-        lobbyManager.playerNames.onChanged += OnPlayerNamesChanged;
+        lobbyManager.playerLobbyData.onChanged += OnPlayerLobbyDataChanged;
     }
 
     void OnDestroy()
     {
-        lobbyManager.playerIDs.onChanged -= OnPlayerIDsChanged;
-        lobbyManager.playerReadyStates.onChanged -= OnPlayerReadyStatesChanged;
-        lobbyManager.playerNames.onChanged -= OnPlayerNamesChanged;
+        lobbyManager.playerLobbyData.onChanged -= OnPlayerLobbyDataChanged;
     }
 
-    private void OnPlayerIDsChanged(SyncListChange<PlayerID> change)
-    {
-        if (change.operation == SyncListOperation.Cleared)
-            return;
-
-        switch(change.operation)
-        {   
-            // New Player is added, create UI
-            case SyncListOperation.Added:
-                if (lobbyPlayerUIs.ContainsKey(change.value))
-                    break;
-                var player = Instantiate(lobbyPlayerPrefab, transform).GetComponent<LobbyPlayer>();
-                lobbyPlayerUIs.Add(change.value, player);
-                break;
-            // Player is removed, destroy UI
-            case SyncListOperation.Removed:
-                player = lobbyPlayerUIs[change.value];
-                lobbyPlayerUIs.Remove(change.value);
-                Destroy(player.gameObject);
-                break;        
-        }
-    }
-
-    private void OnPlayerReadyStatesChanged(SyncDictionaryChange<PlayerID, bool> change)
+    private void OnPlayerLobbyDataChanged(SyncDictionaryChange<PlayerID, PlayerLobbyData> change)
     {
         if (change.operation == SyncDictionaryOperation.Cleared)
             return;
@@ -62,44 +35,47 @@ public class LobbyUI : MonoBehaviour
         }
 
         var localPlayer = InstanceHandler.NetworkManager.localPlayer;
-        
 
         switch (change.operation)
         {
             case SyncDictionaryOperation.Added:
-                player.SetReadyText(change.value);
+                UpdatePlayerCard(change.key, change.value);
                 break;
             case SyncDictionaryOperation.Set:
-                player.SetReadyText(change.value);
-                if (change.key == localPlayer)
-                    readyButtonText.text = change.value ? "Cancel" : "Ready";
+                UpdatePlayerCard(change.key, change.value);
                 break;
             case SyncDictionaryOperation.Removed:
                 break;
         }
     }
 
-    private void OnPlayerNamesChanged(SyncDictionaryChange<PlayerID, string> change)
+    void UpdatePlayerCard(PlayerID playerID, PlayerLobbyData data)
     {
-        if (change.operation == SyncDictionaryOperation.Cleared)
-            return;
-
-        if (!lobbyPlayerUIs.TryGetValue(change.key, out var player) && change.operation == SyncDictionaryOperation.Set)
+        // Need to give a new player a UI card
+        if (!lobbyPlayerUIs.ContainsKey(playerID))
         {
-            Debug.LogError($"Unable to find player UI for player {change.key}");
-            return;
+            var p = Instantiate(lobbyPlayerPrefab, transform).GetComponent<LobbyPlayer>();
+            lobbyPlayerUIs.Add(playerID, p);
         }
 
-        switch (change.operation)
-        {
-            case SyncDictionaryOperation.Added:
-                player.SetNameText(change.value);
-                break;
-            case SyncDictionaryOperation.Set:
-                player.SetNameText(change.value);
-                break;
-            case SyncDictionaryOperation.Removed:
-                break;
-        }
+        LobbyPlayer player = lobbyPlayerUIs[playerID];
+
+        // Update the UI card data
+        player.SetNameText(data.name);
+        player.SetReadyText(data.isReady);
+    }
+
+    void RemovePlayerCard(PlayerID playerID)
+    {
+        if (!lobbyPlayerUIs.ContainsKey(playerID))
+            return;
+
+        LobbyPlayer lobbyPlayer = lobbyPlayerUIs[playerID];
+        
+        // Destroy the UI card
+        Destroy(lobbyPlayer.gameObject);
+
+        // Remove them from the dictionary
+        lobbyPlayerUIs.Remove(playerID);
     }
 }

@@ -12,10 +12,6 @@ public struct PlayerLobbyData
 
 public class LobbyManager : NetworkBehaviour
 {
-    public SyncList<PlayerID> playerIDs = new SyncList<PlayerID>();
-    public SyncDictionary<PlayerID, bool> playerReadyStates = new SyncDictionary<PlayerID, bool>();
-    public SyncDictionary<PlayerID, string> playerNames = new SyncDictionary<PlayerID, string>();
-
     public SyncDictionary<PlayerID, PlayerLobbyData> playerLobbyData = new();
 
     protected override void OnSpawned(bool asServer)
@@ -52,32 +48,59 @@ public class LobbyManager : NetworkBehaviour
     [ServerRpc(requireOwnership: false)]
     void CmdSetReadyState(RPCInfo info = default)
     {
-        playerReadyStates[info.sender] = !playerReadyStates[info.sender];        
+        PlayerLobbyData oldData = playerLobbyData[info.sender];
+
+        AddOrSetPlayerLobbyData(info.sender, new PlayerLobbyData
+        {
+            playerID = oldData.playerID,
+            isReady = !oldData.isReady,
+            name = oldData.name
+        });
     }
 
     [ServerRpc(requireOwnership: false)]
     void CmdSetPlayerName(string name, RPCInfo info = default)
     {
-        playerNames[info.sender] = name;
+        PlayerLobbyData oldData = playerLobbyData[info.sender];
+
+        AddOrSetPlayerLobbyData(info.sender, new PlayerLobbyData
+        {
+            playerID = oldData.playerID,
+            isReady = oldData.isReady,
+            name = name
+        });
     }
 
     private void OnPlayerJoined(PlayerID player, SceneID scene, bool asServer)
     {
+        // 002 is the LobbyScene index + 1
         if (!asServer || scene.id != 002)
             return;
 
-        playerIDs.Add(player);
-        playerReadyStates.Add(player, false);
-        playerNames.Add(player, $"Loading ({player.id.ToString()})");
+        PlayerLobbyData data = new PlayerLobbyData
+        {
+            playerID = player,
+            isReady = false,
+            name = $"Loading ({player.id.ToString()})"
+        };
+
+        AddOrSetPlayerLobbyData(player, data);
     }
 
     private void OnPlayerLeft(PlayerID player, SceneID scene, bool asServer)
     {
+        // 002 is the LobbyScene index + 1
         if (!asServer || scene.id != 002)
             return;
 
-        playerIDs.Remove(player);
-        playerReadyStates.Remove(player);
-        playerNames.Remove(player);
+        playerLobbyData.Remove(player);
+    }
+
+    public void AddOrSetPlayerLobbyData(PlayerID player, PlayerLobbyData data)
+    {
+        if (playerLobbyData.ContainsKey(player))
+            playerLobbyData[player] = data;
+        else
+            playerLobbyData.Add(player, data);
     }
 }
