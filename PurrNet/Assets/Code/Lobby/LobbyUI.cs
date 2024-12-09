@@ -10,6 +10,7 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] LobbyManager lobbyManager;
     [SerializeField] GameObject lobbyPlayerPrefab;
     [SerializeField] TextMeshProUGUI readyButtonText;
+    [SerializeField] Button startButton;
 
     Dictionary<PlayerID, LobbyPlayer> lobbyPlayerUIs = new Dictionary<PlayerID, LobbyPlayer>(); 
 
@@ -40,13 +41,24 @@ public class LobbyUI : MonoBehaviour
         {
             case SyncDictionaryOperation.Added:
                 UpdatePlayerCard(change.key, change.value);
+                UpdateStartButton();
                 break;
             case SyncDictionaryOperation.Set:
                 UpdatePlayerCard(change.key, change.value);
+                UpdateStartButton();
                 break;
             case SyncDictionaryOperation.Removed:
                 break;
         }
+    }
+
+    void UpdateStartButton()
+    {
+        // Only let the host start the game
+        if (!InstanceHandler.NetworkManager.isServer)
+            return;
+
+        startButton.interactable = lobbyManager.AllPlayersReady();
     }
 
     void UpdatePlayerCard(PlayerID playerID, PlayerLobbyData data)

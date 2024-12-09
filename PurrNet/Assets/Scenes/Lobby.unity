@@ -468,6 +468,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lobby Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5105194747137819737, guid: a16528ddcff5e6746b13e572409b011a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TryStartGame
+      objectReference: {fileID: 0}
     - target: {fileID: 6181587297119536168, guid: a16528ddcff5e6746b13e572409b011a, type: 3}
       propertyPath: m_Pivot.x
       value: 0

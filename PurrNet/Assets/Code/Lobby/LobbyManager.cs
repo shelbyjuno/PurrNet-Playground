@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PurrNet;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public struct PlayerLobbyData
 
 public class LobbyManager : NetworkBehaviour
 {
+    [SerializeField] string gameSceneName = "Game";
+
     public SyncDictionary<PlayerID, PlayerLobbyData> playerLobbyData = new();
 
     protected override void OnSpawned(bool asServer)
@@ -45,6 +48,15 @@ public class LobbyManager : NetworkBehaviour
         CmdSetReadyState();
     }
 
+    public void TryStartGame()
+    {
+        // Only let the host start the game if all players are ready
+        if (!networkManager.isServer || !AllPlayersReady())
+            return;
+
+        networkManager.sceneModule.LoadSceneAsync(gameSceneName);
+    }
+
     [ServerRpc(requireOwnership: false)]
     void CmdSetReadyState(RPCInfo info = default)
     {
@@ -73,8 +85,8 @@ public class LobbyManager : NetworkBehaviour
 
     private void OnPlayerJoined(PlayerID player, SceneID scene, bool asServer)
     {
-        // 002 is the LobbyScene index + 1
-        if (!asServer || scene.id != 002)
+        // 001 is the LobbyScene index
+        if (!asServer || scene.id != 001)
             return;
 
         PlayerLobbyData data = new PlayerLobbyData
@@ -89,8 +101,8 @@ public class LobbyManager : NetworkBehaviour
 
     private void OnPlayerLeft(PlayerID player, SceneID scene, bool asServer)
     {
-        // 002 is the LobbyScene index + 1
-        if (!asServer || scene.id != 002)
+        // 002 is the LobbyScene index
+        if (!asServer || scene.id != 001)
             return;
 
         playerLobbyData.Remove(player);
@@ -103,4 +115,6 @@ public class LobbyManager : NetworkBehaviour
         else
             playerLobbyData.Add(player, data);
     }
+
+    public bool AllPlayersReady() => playerLobbyData.All(x => x.Value.isReady);
 }
