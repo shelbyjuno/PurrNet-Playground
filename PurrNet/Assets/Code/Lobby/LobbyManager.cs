@@ -21,7 +21,7 @@ public class LobbyManager : NetworkBehaviour
         if (asServer)
             return;
 
-        CmdSetPlayerName($"Shelby {localPlayer}");        
+        CmdSetPlayerName($"Player {localPlayer}");        
     }
 
     protected override void OnInitializeModules()

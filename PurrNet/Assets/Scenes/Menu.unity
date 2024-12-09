@@ -999,7 +999,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SkiTTe
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e8f69f6cee2bf574ab1ee666761090ef, type: 2}
   m_sharedMaterial: {fileID: 8748610839892491133, guid: e8f69f6cee2bf574ab1ee666761090ef, type: 2}
