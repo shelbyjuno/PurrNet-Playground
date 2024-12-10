@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PurrNet;
+using PurrNet.Modules;
 using UnityEngine;
 
 public struct PlayerLobbyData
@@ -85,8 +86,16 @@ public class LobbyManager : NetworkBehaviour
 
     private void OnPlayerJoined(PlayerID player, SceneID scene, bool asServer)
     {
-        // 001 is the LobbyScene index
-        if (!asServer || scene.id != 001)
+        if (!asServer)
+            return;
+
+        if (!NetworkManager.main.TryGetModule(out ScenesModule scenes, true))
+            return;
+
+        if (!scenes.TryGetSceneID(gameObject.scene, out var sceneID))
+            return;
+            
+        if (sceneID != scene)
             return;
 
         PlayerLobbyData data = new PlayerLobbyData
@@ -101,8 +110,16 @@ public class LobbyManager : NetworkBehaviour
 
     private void OnPlayerLeft(PlayerID player, SceneID scene, bool asServer)
     {
-        // 002 is the LobbyScene index
-        if (!asServer || scene.id != 001)
+        if (!asServer)
+            return;
+
+        if (!NetworkManager.main.TryGetModule(out ScenesModule scenes, true))
+            return;
+
+        if (!scenes.TryGetSceneID(gameObject.scene, out var sceneID))
+            return;
+            
+        if (sceneID != scene)
             return;
 
         playerLobbyData.Remove(player);
