@@ -8,6 +8,7 @@ using UnityEngine;
 public struct PlayerLobbyData
 {
     public PlayerID playerID;
+    public ulong steamID;
     public bool isReady;
     public string name;
 }
@@ -25,7 +26,7 @@ public class LobbyManager : NetworkBehaviour
         if (asServer)
             return;
 
-        CmdSetPlayerName($"Player {localPlayer}");        
+        CmdSetPlayerData($"{SteamHelpers.GetPersonaName()} ({localPlayer})", SteamHelpers.GetSteamID().m_SteamID);        
     }
 
     protected override void OnInitializeModules()
@@ -66,19 +67,21 @@ public class LobbyManager : NetworkBehaviour
         AddOrSetPlayerLobbyData(info.sender, new PlayerLobbyData
         {
             playerID = oldData.playerID,
+            steamID = oldData.steamID,
             isReady = !oldData.isReady,
             name = oldData.name
         });
     }
 
     [ServerRpc(requireOwnership: false)]
-    void CmdSetPlayerName(string name, RPCInfo info = default)
+    void CmdSetPlayerData(string name, ulong steamID, RPCInfo info = default)
     {
         PlayerLobbyData oldData = playerLobbyData[info.sender];
 
         AddOrSetPlayerLobbyData(info.sender, new PlayerLobbyData
         {
             playerID = oldData.playerID,
+            steamID = steamID,
             isReady = oldData.isReady,
             name = name
         });
@@ -101,6 +104,7 @@ public class LobbyManager : NetworkBehaviour
         PlayerLobbyData data = new PlayerLobbyData
         {
             playerID = player,
+            steamID = default,
             isReady = false,
             name = $"Loading ({player.id.ToString()})"
         };

@@ -9,6 +9,8 @@ public class LobbyUI : MonoBehaviour
 {
     [SerializeField] LobbyManager lobbyManager;
     [SerializeField] GameObject lobbyPlayerPrefab;
+    [SerializeField] Transform lobbyPlayerParent;
+    [SerializeField] TextMeshProUGUI lobbyNameText;
     [SerializeField] TextMeshProUGUI readyButtonText;
     [SerializeField] Button startButton;
 
@@ -35,20 +37,29 @@ public class LobbyUI : MonoBehaviour
             return;
         }
 
-        switch (change.operation)
+        // If info is added or set, update the UI
+        if (change.operation == SyncDictionaryOperation.Set || change.operation == SyncDictionaryOperation.Added)
         {
-            case SyncDictionaryOperation.Added:
-                UpdatePlayerCard(change.key, change.value);
-                UpdateStartButton();
-                break;
-            case SyncDictionaryOperation.Set:
-                UpdatePlayerCard(change.key, change.value);
-                UpdateReadyButton(change.key, change.value);
-                UpdateStartButton();
-                break;
-            case SyncDictionaryOperation.Removed:
-                break;
+            UpdateLobbyText(change.key, change.value);
+            UpdatePlayerCard(change.key, change.value);
+            UpdateReadyButton(change.key, change.value);
+            UpdateStartButton();
         }
+        else if (change.operation == SyncDictionaryOperation.Removed)
+        {
+            RemovePlayerCard(change.key);
+        }
+
+    }
+
+    void UpdateLobbyText(PlayerID playerID, PlayerLobbyData data)
+    {
+        // Check if the player is the host
+        if(playerID.id != 1)
+            return;
+        
+        // If the player is the host, update the lobby name
+        lobbyNameText.SetText($"{data.name}'s\n<size=22.5>Lobby</size>");
     }
 
     void UpdateReadyButton(PlayerID playerID, PlayerLobbyData data)
@@ -75,7 +86,7 @@ public class LobbyUI : MonoBehaviour
         // Need to give a new player a UI card
         if (!lobbyPlayerUIs.ContainsKey(playerID))
         {
-            var p = Instantiate(lobbyPlayerPrefab, transform).GetComponent<LobbyPlayer>();
+            var p = Instantiate(lobbyPlayerPrefab, lobbyPlayerParent).GetComponent<LobbyPlayer>();
             lobbyPlayerUIs.Add(playerID, p);
         }
 
@@ -83,6 +94,7 @@ public class LobbyUI : MonoBehaviour
 
         // Update the UI card data
         player.SetNameText(data.name);
+        SteamHelpers.GetAvatarSprite(SteamHelpers.ConvertToCSteamID(data.steamID), (sprite) => player.SetSteamImage(sprite));
         player.SetReadyText(data.isReady);
     }
 

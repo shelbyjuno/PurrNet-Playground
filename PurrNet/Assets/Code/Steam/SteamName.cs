@@ -6,7 +6,7 @@ public class SteamName : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI text;
 
-    void Awake()
+    void Start()
     {
         text.SetText(SteamFriends.GetPersonaName());
     }

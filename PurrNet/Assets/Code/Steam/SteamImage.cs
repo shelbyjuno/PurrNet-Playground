@@ -6,9 +6,9 @@ public class SteamImage : MonoBehaviour
 {
     [SerializeField] Image image;
 
-    void Awake()
+    void Start()
     {
-        Steamworks.CSteamID steamID = SteamUser.GetSteamID();
+        CSteamID steamID = SteamUser.GetSteamID();
         SteamHelpers.GetAvatarSprite(steamID, (avatar) => image.sprite = avatar);
     }
 }
