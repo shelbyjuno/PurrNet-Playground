@@ -35,8 +35,6 @@ public class LobbyUI : MonoBehaviour
             return;
         }
 
-        var localPlayer = InstanceHandler.NetworkManager.localPlayer;
-
         switch (change.operation)
         {
             case SyncDictionaryOperation.Added:
@@ -45,11 +43,22 @@ public class LobbyUI : MonoBehaviour
                 break;
             case SyncDictionaryOperation.Set:
                 UpdatePlayerCard(change.key, change.value);
+                UpdateReadyButton(change.key, change.value);
                 UpdateStartButton();
                 break;
             case SyncDictionaryOperation.Removed:
                 break;
         }
+    }
+
+    void UpdateReadyButton(PlayerID playerID, PlayerLobbyData data)
+    {
+        // if the local player is the player, update the ready button text to reflect ready / unready
+        var localPlayer = InstanceHandler.NetworkManager.localPlayer;
+        if (localPlayer != playerID)
+            return;
+
+        readyButtonText.SetText(!data.isReady ? "Ready" : "Unready");
     }
 
     void UpdateStartButton()
