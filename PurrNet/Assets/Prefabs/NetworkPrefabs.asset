@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66869b09091574e4c972f42f5ae2268e, type: 3}
   m_Name: NetworkPrefabs
   m_EditorClassIdentifier: 
-  autoGenerate: 1
-  networkOnly: 1
+  autoGenerate: 0
+  networkOnly: 0
   folder: {fileID: 102900000, guid: 701904a9acee5694390f53bf86a62ab4, type: 3}
   prefabs:
   - {fileID: 7740094327273162032, guid: 48893d2aacbd55443866425ecbec8d6f, type: 3}
   - {fileID: 239408335679793035, guid: a16528ddcff5e6746b13e572409b011a, type: 3}
+  - {fileID: 1949374983515935941, guid: d37501ad9edd76e43a83a94b0ee5a374, type: 3}
+  - {fileID: 1955871718835899260, guid: 899698d3f1ab0f348b20ae033a6f9c33, type: 3}
+  - {fileID: 7371338371501690228, guid: 2c0a1b23d96ea8f4a87f48f0c22a2f54, type: 3}

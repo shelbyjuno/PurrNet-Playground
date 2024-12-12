@@ -28,6 +28,9 @@ public class LobbyUI : MonoBehaviour
 
     private void OnPlayerLobbyDataChanged(SyncDictionaryChange<PlayerID, PlayerLobbyData> change)
     {
+        if (!enabled)
+            return;
+
         if (change.operation == SyncDictionaryOperation.Cleared)
             return;
 
