@@ -63,9 +63,9 @@ public class ChatManager : PurrMonoBehaviour
     /// </param>
     private void OnChatMessage(PlayerID player, ChatMessage data, bool asServer)
     {
-        if (asServer)
+        if (asServer)   // If called on the server, we need to send the broadcast to the clients
             InstanceHandler.NetworkManager.SendToAll(data);
-        else
+        else    // If called on a client, we need to invoke the OnChatMessageReceived event (see ChatUI.cs)
             OnChatMessageReceived?.Invoke(data);
     }
 }
