@@ -26,7 +26,7 @@ public class LobbyManager : NetworkBehaviour
         if (asServer)
             return;
 
-        CmdSetPlayerData($"{SteamHelpers.GetPersonaName()} ({localPlayer})", SteamHelpers.GetSteamID().m_SteamID);        
+        CmdSetPlayerData($"{SteamHelpers.GetPersonaName()} ({localPlayer})", SteamHelpers.GetSteamID().m_SteamID);
     }
 
     protected override void OnInitializeModules()
@@ -97,7 +97,7 @@ public class LobbyManager : NetworkBehaviour
 
         if (!scenes.TryGetSceneID(gameObject.scene, out var sceneID))
             return;
-            
+
         if (sceneID != scene)
             return;
 
@@ -122,7 +122,7 @@ public class LobbyManager : NetworkBehaviour
 
         if (!scenes.TryGetSceneID(gameObject.scene, out var sceneID))
             return;
-            
+
         if (sceneID != scene)
             return;
 

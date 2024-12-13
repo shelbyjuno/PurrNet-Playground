@@ -6,6 +6,7 @@ public class ChatMessageUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private Image profileImage;
+
     public void SetData(ChatMessage data)
     {
         messageText.text = $"{data.name}: {data.message}";

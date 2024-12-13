@@ -58,7 +58,7 @@ public class ChatUI : MonoBehaviour
     void OnChatMessageReceived(ChatMessage data)
     {
         // Remove old messages
-        if(chatMessages.Count >= maxMessages)
+        if (chatMessages.Count >= maxMessages)
         {
             var messageToRemove = chatMessages[0];
             chatMessages.RemoveAt(0);
