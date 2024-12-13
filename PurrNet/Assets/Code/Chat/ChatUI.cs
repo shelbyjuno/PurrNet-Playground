@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
+using PurrNet;
 
 public class ChatUI : MonoBehaviour
 {
@@ -42,13 +43,15 @@ public class ChatUI : MonoBehaviour
         // Unfocus the input field
         inputField.DeactivateInputField();
 
-        // Send the message
+        // Construct the chat message
         var chatMessage = new ChatMessage
         {
-            ID = SteamHelpers.GetSteamID().m_SteamID,
+            userID = SteamHelpers.GetSteamID().m_SteamID,
+            name = $"{SteamHelpers.GetPersonaName()} ({InstanceHandler.NetworkManager.localPlayer})",
             message = text
         };
 
+        // Send the chat message to the server
         ChatManager.SendChatMessage(chatMessage);
     }
 
@@ -65,7 +68,6 @@ public class ChatUI : MonoBehaviour
         var chatMessageUI = Instantiate(chatMessagePrefab, chatMessageParent);
         chatMessages.Add(chatMessageUI);
 
-        chatMessageUI.SetProfileImage(data.ID);
-        chatMessageUI.SetMessage(data.message);
+        chatMessageUI.SetData(data);
     }
 }

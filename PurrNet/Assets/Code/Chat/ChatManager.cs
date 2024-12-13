@@ -10,7 +10,8 @@ using PurrNet.Packing;
 /// </summary>
 public struct ChatMessage : IPackedAuto
 {
-    public ulong ID;
+    public ulong userID;
+    public string name;
     public string message;
 }
 
