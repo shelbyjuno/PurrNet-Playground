@@ -30,27 +30,20 @@ public class ChatManager : NetworkBehaviour
 
     void Update()
     {
-        if (Keyboard.current.enterKey.wasPressedThisFrame)
+        if (Keyboard.current.enterKey.wasPressedThisFrame && !inputField.isFocused)
         {
-            if (submitting)
-            {
-                submitting = false;
-            }
-            else
-            {
-                inputField.ActivateInputField();
-            }
+            inputField.ActivateInputField();
         }
     }
 
     private void OnSubmit(string text)
     {
+        // Unfocus the input field
+        inputField.DeactivateInputField();
+
         // Don't send empty messages
         if (text == string.Empty)
             return;
-
-        // Flag
-        submitting = true;
 
         // Clear the input field
         inputField.text = string.Empty;
