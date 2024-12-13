@@ -148,8 +148,9 @@ GameObject:
   - component: {fileID: 5458246178292078196}
   - component: {fileID: 6901811967432989333}
   - component: {fileID: 8522313556429404044}
-  - component: {fileID: 9015537050410637459}
-  - component: {fileID: 5643584158500996519}
+  - component: {fileID: 6251583332870559781}
+  - component: {fileID: 467628030413605540}
+  - component: {fileID: 1063774165041332464}
   m_Layer: 5
   m_Name: Chat Canvas
   m_TagString: Untagged
@@ -241,7 +242,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &9015537050410637459
+--- !u!114 &6251583332870559781
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -253,13 +254,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05421ad09c753f14a9f5c11f02281fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  maxMessages: 4
+  OnChatMessageReceived:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &467628030413605540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1949374983515935941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b87347047dacaf4d877afba7878bd68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chatManager: {fileID: 6251583332870559781}
   inputField: {fileID: 810361369288093679}
   chatMessagePrefab: {fileID: 4406543485347166844, guid: 899698d3f1ab0f348b20ae033a6f9c33, type: 3}
   chatMessageParent: {fileID: 5810507300857174037}
---- !u!114 &5643584158500996519
+  maxMessages: 4
+--- !u!114 &1063774165041332464
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

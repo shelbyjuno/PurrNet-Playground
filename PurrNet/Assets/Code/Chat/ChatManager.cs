@@ -1,78 +1,71 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
+using UnityEngine.Events;
 using PurrNet;
-using UnityEngine.InputSystem;
+using PurrNet.Packing;
 
-public class ChatManager : NetworkBehaviour
+/// <summary>
+/// A simple chat message struct (Needs the IPackedAuto interface as we are broadcasting it)
+/// </summary>
+public struct ChatMessage : IPackedAuto
 {
-    [SerializeField] int maxMessages = 4;
-    [SerializeField] TMP_InputField inputField;
-    [SerializeField] ChatMessage chatMessagePrefab;
-    [SerializeField] Transform chatMessageParent;
+    public ulong ID;
+    public string message;
+}
 
-    private List<ChatMessage> chatMessages = new();
+/// <summary>
+/// Handles sending and receiving chat messages with broadcasting (avoids having to use a NetworkBehaviour)
+/// </summary>
+public class ChatManager : PurrMonoBehaviour
+{
+    public UnityEvent<ChatMessage> OnChatMessageReceived = new UnityEvent<ChatMessage>();
 
-    private bool submitting = false;
+    // Seems to be an issue with Subscribe being falled twice with asServer = false, use these flags as workaround
+    private bool subscribedOnClient = false;
+    private bool subscribedOnServer = false;
 
-    void Awake()
+    // Subscribe to ChatMessage events as either the server, client, or both
+    public override void Subscribe(NetworkManager manager, bool asServer)
     {
-        inputField.onSubmit.AddListener(OnSubmit);
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-
-        inputField.onSubmit.RemoveListener(OnSubmit);
-    }
-
-    void Update()
-    {
-        if (Keyboard.current.enterKey.wasPressedThisFrame && !inputField.isFocused)
+        if (!subscribedOnClient && !asServer)
         {
-            inputField.ActivateInputField();
+            subscribedOnClient = true;
+            manager.Subscribe<ChatMessage>(OnChatMessage, asServer);
+        }
+        else if (!subscribedOnServer && asServer)
+        {
+            subscribedOnServer = true;
+            manager.Subscribe<ChatMessage>(OnChatMessage, asServer);
         }
     }
 
-    private void OnSubmit(string text)
+    // Unsubscribe to ChatMessage events as either the server, client, or both
+    public override void Unsubscribe(NetworkManager manager, bool asServer)
     {
-        // Unfocus the input field
-        inputField.DeactivateInputField();
-
-        // Don't send empty messages
-        if (text == string.Empty)
-            return;
-
-        // Clear the input field
-        inputField.text = string.Empty;
-
-        // Unfocus the input field
-        inputField.DeactivateInputField();
-
-        // Send the message
-        CmdSendChatMessage(SteamHelpers.GetSteamID().m_SteamID, text);
+        manager.Unsubscribe<ChatMessage>(OnChatMessage, asServer);
     }
 
-    [ServerRpc(requireOwnership: false)]
-    void CmdSendChatMessage(ulong userID, string message) => RpcReceiveChatMessage(userID, message);
+    /// <summary>
+    /// Called from a client to send a chat message to the server
+    /// </summary>
+    /// <param name="data">Message Data to send</param>
+    public static void SendChatMessage(ChatMessage data) => InstanceHandler.NetworkManager.SendToServer(data);
 
-    [ObserversRpc]
-    void RpcReceiveChatMessage(ulong userID, string message)
+    /// <summary>
+    /// Called when a ChatMessage broadcast is sent. from either the server or a client
+    /// </summary>
+    /// <param name="player">The player who sent the message</param>
+    /// <param name="data">The message data</param>
+    /// <param name="asServer">
+    /// If the message is received on the server (asServer = true), send it to all clients (NetworkManager.SendToAll)
+    /// If the message is received on a client (asServer = false), invoke the OnChatMessageReceived event
+    /// </param>
+    private void OnChatMessage(PlayerID player, ChatMessage data, bool asServer)
     {
-        // Remove old messages
-        if(chatMessages.Count >= maxMessages)
-        {
-            var messageToRemove = chatMessages[0];
-            chatMessages.RemoveAt(0);
-            Destroy(messageToRemove.gameObject);
-        }
-
-        var chatMessage = Instantiate(chatMessagePrefab, chatMessageParent);
-        chatMessages.Add(chatMessage);
-
-        chatMessage.SetProfileImage(userID);
-        chatMessage.SetMessage(message);
+        if (asServer)
+            InstanceHandler.NetworkManager.SendToAll(data);
+        else
+            OnChatMessageReceived?.Invoke(data);
     }
 }

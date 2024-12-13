@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChatMessage : MonoBehaviour
+public class ChatMessageUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private Image profileImage;
