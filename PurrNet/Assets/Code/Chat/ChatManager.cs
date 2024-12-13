@@ -19,25 +19,13 @@ public struct ChatMessage : IPackedAuto
 /// </summary>
 public class ChatManager : PurrMonoBehaviour
 {
+    // Event to invoke when a chat message is received on the client
     public UnityEvent<ChatMessage> OnChatMessageReceived = new UnityEvent<ChatMessage>();
-
-    // Seems to be an issue with Subscribe being falled twice with asServer = false, use these flags as workaround
-    private bool subscribedOnClient = false;
-    private bool subscribedOnServer = false;
 
     // Subscribe to ChatMessage events as either the server, client, or both
     public override void Subscribe(NetworkManager manager, bool asServer)
     {
-        if (!subscribedOnClient && !asServer)
-        {
-            subscribedOnClient = true;
-            manager.Subscribe<ChatMessage>(OnChatMessage, asServer);
-        }
-        else if (!subscribedOnServer && asServer)
-        {
-            subscribedOnServer = true;
-            manager.Subscribe<ChatMessage>(OnChatMessage, asServer);
-        }
+        manager.Subscribe<ChatMessage>(OnChatMessage, asServer);
     }
 
     // Unsubscribe to ChatMessage events as either the server, client, or both
