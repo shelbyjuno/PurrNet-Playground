@@ -4,10 +4,10 @@
 Broadcsting in PurrNet is useful, as it allows us to do some basic network functionality, all without needing a `NetworkBehaviour` on our object. For things that are trivial, such as game chat, we don't necessarily need all the functionality of a `NetworkBehaviour`.
 
 The idea is as follows:
-1. We will create a *struct* to hold our chat message data, such as a username and a message.
-2. We will allow **Clients** to send a message to the **Server**, containing this information.
-3. The **Server** will then take this information, and pass it back down to all of the **Clients**.
-4. With this information, we can then print it out to some UI, or place it above a player head.
+1. Create a `ChatMessage` struct to store data such as a `name` and `message`.
+2. Send a `ChatMessage` with our desired `name` and `message` to the **Server**.
+3. Receive `ChatMessage` on the **Server**, then broadcast the `ChatMessage` to all **Clients**.
+4. Receive `ChatMessage` on the **Clients**, then print the `ChatMessage` out.
 
 ## 1. Creating the `ChatMessage` struct:
 To get our chat message to the server, we need to first create a struct to hold our data. As previously mentioned, this struct will hold a `name`, and a `message`. This struct will need to implement the `IPackedAuto` interface, which will automatically handle the reading and writing of the data to the network. If this is not your style, take a look at the `IPacked` and `IPackedSimple` interfaces.
