@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using TMPro;
 using PurrNet;
 
@@ -26,6 +28,12 @@ public class ChatUI : MonoBehaviour
     {
         inputField.onSubmit.RemoveListener(OnSubmit);
         chatManager.OnChatMessageReceived.RemoveListener(OnChatMessageReceived);
+    }
+
+    void Update()
+    {
+        if (Keyboard.current.enterKey.wasPressedThisFrame && !inputField.isFocused)
+            inputField.Select();
     }
 
     private void OnSubmit(string text)
