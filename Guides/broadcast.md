@@ -21,7 +21,7 @@ public struct ChatMessage : IPackedAuto
 }
 ```
 
-## 2. Allowing **Clients** to send a `ChatMessage` to the **Server**
+## 2. Sending a `ChatMessage` to the **Server**
 For our **Clients** to be able to send a message to the **Server**, we first need to hook into the `Subscribe` event from the `NetworkManager`
 ```C#
 void NetworkManager.Subscribe<ChatMessage>(PlayerBroadcastDelegate<ChatMessage> callback, bool asServer)
@@ -76,7 +76,7 @@ void Update()
 }
 ```
 
-## 3. Receiving a `ChatMessage` on the server
+## 3. Receiving a `ChatMessage` on the server, and sending it to all **Clients**
 Now that we are sending messages from the **Client**, lets sketch our `OnChatMessage` function out to handle receiving a `ChatMessage` broadcast on the server. As mentioned, if we are the server receiving the broadcast, we want to relay this information and broadcast it back to all of our clients, and we can do it very simply with `NetworkManager.SendToAll<ChatMessage>(ChatMessage)`:
 
 ```C#
