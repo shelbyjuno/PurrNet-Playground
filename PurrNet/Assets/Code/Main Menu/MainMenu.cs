@@ -1,10 +1,13 @@
 using PurrNet;
+using PurrNet.Steam;
 using PurrNet.Transports;
 using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
-    [SerializeField] string lobbySceneName = "Lobby";    
+    [SerializeField] string lobbySceneName = "Lobby";
+    [SerializeField] SteamLobbyManager steamLobbyManager;
+
     NetworkManager networkManager;
 
     void Awake()
@@ -23,12 +26,26 @@ public class MainMenu : MonoBehaviour
 
     public void StartHost()
     {
-        networkManager.StartServer();
-        networkManager.StartClient();
+        if (networkManager.transport is SteamTransport)
+        {
+            steamLobbyManager.CreateLobby();
+        }
+        else
+        {
+            networkManager.StartServer();
+            networkManager.StartClient();
+        }
     }
 
     public void StartClient()
     {
-        networkManager.StartClient();
+        if (networkManager.transport is SteamTransport)
+        {
+            steamLobbyManager.JoinLobby();
+        }
+        else
+        {
+            networkManager.StartClient();
+        }
     }
 }
