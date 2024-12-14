@@ -163,3 +163,5 @@ public class ChatManager : PurrMonoBehaviour
     }
 }
 ```
+
+If you'd like to see a working example in action, take a look at [ChatManager.cs](https://github.com/shelbyjuno/PurrNet-Playground/blob/f73e54eb6ef40670b3d99ffaf24519d1778e1cf2/PurrNet/Assets/Code/Chat/ChatManager.cs)!
