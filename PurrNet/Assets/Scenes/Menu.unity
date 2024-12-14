@@ -719,8 +719,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8749048598420446967}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+      - m_Target: {fileID: 8749048598420446968}
+        m_TargetAssemblyTypeName: NetworkHelpers, Assembly-CSharp
         m_MethodName: StartClient
         m_Mode: 1
         m_Arguments:
@@ -880,7 +880,7 @@ MonoBehaviour:
   _startClientFlags: 4
   _cookieScope: 1
   _dontDestroyOnLoad: 1
-  _transport: {fileID: 1705061927}
+  _transport: {fileID: 1705061926}
   _networkPrefabs: {fileID: 11400000, guid: 9c8596111961d9445ba86a0448a459c3, type: 2}
   _networkRules: {fileID: 11400000, guid: d8799083b96579a42b8b2d03e4ceae98, type: 2}
   _visibilityRules: {fileID: 11400000, guid: 8f014a5bd8dc68646a2a3c0b18c5bbd8, type: 2}
@@ -1275,6 +1275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c98fcdab4ddda524b98e6ab929132600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  networkManager: {fileID: 1705061921}
   transport: {fileID: 1705061927}
   maxConnections: 4
   lobbyType: 1
@@ -1610,6 +1611,7 @@ GameObject:
   - component: {fileID: 4678567712734149517}
   - component: {fileID: 6716662294620322037}
   - component: {fileID: 8749048598420446967}
+  - component: {fileID: 8749048598420446968}
   m_Layer: 5
   m_Name: Menu Canvas
   m_TagString: Untagged
@@ -2060,6 +2062,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbySceneName: Lobby
   steamLobbyManager: {fileID: 2117368325}
+--- !u!114 &8749048598420446968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454605204474592597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5d82c8bb6a4c640aea76a7816f9563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &9063842470264376329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2134,8 +2148,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8749048598420446967}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+      - m_Target: {fileID: 8749048598420446968}
+        m_TargetAssemblyTypeName: NetworkHelpers, Assembly-CSharp
         m_MethodName: StartHost
         m_Mode: 1
         m_Arguments:

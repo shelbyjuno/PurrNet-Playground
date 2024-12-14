@@ -59,6 +59,14 @@ public class LobbyManager : NetworkBehaviour
         networkManager.sceneModule.LoadSceneAsync(gameSceneName);
     }
 
+    public void LeaveGame()
+    {
+        networkManager.StopClient();
+
+        if (networkManager.isServer)
+            networkManager.StopServer();
+    }
+
     [ServerRpc(requireOwnership: false)]
     void CmdSetReadyState(RPCInfo info = default)
     {

@@ -1,4 +1,5 @@
 using System;
+using PurrNet;
 using PurrNet.Steam;
 using Steamworks;
 using UnityEngine;
@@ -6,7 +7,10 @@ using UnityEngine.InputSystem;
 
 public class SteamLobbyManager : MonoBehaviour
 {
+    public static SteamLobbyManager Instance { get; private set; }
+
     [Header("References")]
+    [SerializeField] NetworkManager networkManager;
     [SerializeField] SteamTransport transport;
 
     [Header("Lobby Settings")]
@@ -25,9 +29,18 @@ public class SteamLobbyManager : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
+        
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
+    }
+
+    void OnDestroy()
+    {
+        lobbyCreated.Dispose();
+        lobbyEntered.Dispose();
+        lobbyChatUpdate.Dispose();
     }
 
     public void CreateLobby()
@@ -44,6 +57,14 @@ public class SteamLobbyManager : MonoBehaviour
     public void LeaveLobby() => LeaveLobby(currentLobby);
     public void LeaveLobby(CSteamID id)
     {
+        // Stop the client
+        transport.StopClient();
+
+        // If we are the host, stop the server
+        if (networkManager.isServer)
+            transport.StopServer();
+
+        // Leave the steam lobby
         SteamMatchmaking.LeaveLobby(id);
     }
 

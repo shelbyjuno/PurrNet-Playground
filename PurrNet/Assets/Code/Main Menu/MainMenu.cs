@@ -23,29 +23,4 @@ public class MainMenu : MonoBehaviour
 
         networkManager.sceneModule.LoadSceneAsync(lobbySceneName);
     }
-
-    public void StartHost()
-    {
-        if (networkManager.transport is SteamTransport)
-        {
-            steamLobbyManager.CreateLobby();
-        }
-        else
-        {
-            networkManager.StartServer();
-            networkManager.StartClient();
-        }
-    }
-
-    public void StartClient()
-    {
-        if (networkManager.transport is SteamTransport)
-        {
-            steamLobbyManager.JoinLobby();
-        }
-        else
-        {
-            networkManager.StartClient();
-        }
-    }
 }
