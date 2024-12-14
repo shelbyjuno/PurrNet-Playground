@@ -16,7 +16,4 @@ MonoBehaviour:
   networkOnly: 1
   folder: {fileID: 102900000, guid: 701904a9acee5694390f53bf86a62ab4, type: 3}
   prefabs:
-  - {fileID: 7740094327273162032, guid: 48893d2aacbd55443866425ecbec8d6f, type: 3}
-  - {fileID: 7371338371501690228, guid: 2c0a1b23d96ea8f4a87f48f0c22a2f54, type: 3}
-  - {fileID: 1955871718835899260, guid: 899698d3f1ab0f348b20ae033a6f9c33, type: 3}
   - {fileID: 239408335679793035, guid: a16528ddcff5e6746b13e572409b011a, type: 3}

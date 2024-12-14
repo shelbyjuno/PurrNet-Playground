@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1147766700668955793}
   - component: {fileID: 2085128877532305833}
   - component: {fileID: 4406543485347166844}
-  - component: {fileID: 1199315844066285595}
   m_Layer: 5
   m_Name: Chat Message
   m_TagString: Untagged
@@ -93,21 +92,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageText: {fileID: 5365320989204629821}
   profileImage: {fileID: 4327947635932585909}
---- !u!114 &1199315844066285595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1955871718835899260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d589309a8b0b45f44a0ddd1e2e82017a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _guid: 899698d3f1ab0f348b20ae033a6f9c33
 --- !u!1 &5389167605305874190
 GameObject:
   m_ObjectHideFlags: 0
