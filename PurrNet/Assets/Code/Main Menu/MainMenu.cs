@@ -10,10 +10,16 @@ public class MainMenu : MonoBehaviour
 
     NetworkManager networkManager;
 
-    void Awake()
+    void OnEnable()
     {
         networkManager = InstanceHandler.NetworkManager;
         InstanceHandler.NetworkManager.onClientConnectionState += OnClientConnectionState;
+    }
+
+    void OnDisable()
+    {
+        networkManager = InstanceHandler.NetworkManager;
+        InstanceHandler.NetworkManager.onClientConnectionState -= OnClientConnectionState;
     }
 
     private void OnClientConnectionState(ConnectionState state)
