@@ -14,6 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoGenerate: 1
   networkOnly: 1
+  defaultPooling: 1
   folder: {fileID: 102900000, guid: 701904a9acee5694390f53bf86a62ab4, type: 3}
   prefabs:
-  - {fileID: 239408335679793035, guid: a16528ddcff5e6746b13e572409b011a, type: 3}
+  - prefab: {fileID: 239408335679793035, guid: a16528ddcff5e6746b13e572409b011a, type: 3}
+    pool: 1
+    warmupCount: 5
+  - prefab: {fileID: 1831131123103969233, guid: b165dd9904ed8b54895fbc0528113084, type: 3}
+    pool: 1
+    warmupCount: 5
+  - prefab: {fileID: 3765572270371651434, guid: 0a071eb604b4633429c943bc11c3a274, type: 3}
+    pool: 1
+    warmupCount: 5
+  - prefab: {fileID: 539039952146867235, guid: 609d7926016e7a242a9376746175003e, type: 3}
+    pool: 1
+    warmupCount: 5
