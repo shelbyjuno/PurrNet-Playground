@@ -115,8 +115,6 @@ public class Ball : NetworkBehaviour
             lastOwner = playerThrow;
             canBePickedUpByLastOwner = false;
 
-            Debug.Log($"Player {playerThrow.owner.Value} picked up the ball.");
-
             playerThrow.SetBall(this);
 
             state.value = BallState.Held;

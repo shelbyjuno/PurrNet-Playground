@@ -22,6 +22,7 @@ public class SteamLobbyManager : MonoBehaviour
 
     // Callbacks from steam
     private Callback<LobbyCreated_t> lobbyCreated;
+    private Callback<GameLobbyJoinRequested_t> lobbyJoinRequested;
     private Callback<LobbyEnter_t> lobbyEntered;
     private Callback<LobbyChatUpdate_t> lobbyChatUpdate;
 
@@ -32,6 +33,7 @@ public class SteamLobbyManager : MonoBehaviour
         Instance = this;
         
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+        lobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnLobbyJoinRequested);
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         lobbyChatUpdate = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
     }
@@ -78,6 +80,13 @@ public class SteamLobbyManager : MonoBehaviour
         transport.StartServer();
 
         Debug.Log($"Steam Lobby Created! ({lobbyID})");
+    }
+
+    private void OnLobbyJoinRequested(GameLobbyJoinRequested_t param)
+    {
+        Debug.Log($"Steam Lobby Join Requested! ({param.m_steamIDLobby})");
+
+        JoinLobby(param.m_steamIDLobby);
     }
 
     private void OnLobbyEntered(LobbyEnter_t param)
