@@ -11,25 +11,25 @@ public class GameStateManager : NetworkBehaviour
 
     [Header("Timers")]
     [SerializeField] float startingTime = 5f;
-    private float startingTimer;
+    [HideInInspector] public SyncTimer startingTimer = new SyncTimer();
 
     [SerializeField] float gameTime = 300f;
-    private float gameTimer;
+    [HideInInspector] public SyncTimer gameTimer = new SyncTimer();
 
     [SerializeField] float intermissionTime = 5f;
-    private float intermissionTimer;
+    [HideInInspector] public SyncTimer intermissionTimer = new SyncTimer();
 
     [SerializeField] float endGameTime = 5f;
-    private float endGameTimer;
+    [HideInInspector] public SyncTimer endGameTimer = new SyncTimer();
 
     void Awake()
     {
-        startingTimer = startingTime;
-        gameTimer = gameTime;
-        intermissionTimer = intermissionTime;
-        endGameTimer = endGameTime;
+        gameState.onChanged += GameStateChanged;
 
-        gameState.onChanged += (value) => OnGameStateChanged?.Invoke(value);
+        startingTimer.onTimerEnd += OnStartTimerEnd;
+        gameTimer.onTimerEnd += OnGameTimerEnd;
+        intermissionTimer.onTimerEnd += OnIntermissionTimerEnd;
+        endGameTimer.onTimerEnd += OnEndGameTimerEnd;
     }
 
     protected override void OnSpawned(bool asServer)
@@ -45,30 +45,63 @@ public class GameStateManager : NetworkBehaviour
 
     void Update()
     {
-        if (gameState.value == GameState.Starting)
+
+    }
+
+    private void GameStateChanged(GameState state)
+    {
+        OnGameStateChanged.Invoke(state);
+
+        if (!isServer)
+            return;
+
+        switch (state)
         {
-            startingTimer -= Time.deltaTime;
-
-            if (startingTimer <= 0 && isServer) 
-                gameState.value = GameState.Playing;
+            case GameState.Starting:
+                startingTimer.StartTimer(startingTime);
+                break;
+            case GameState.Playing:
+                gameTimer.StartTimer(gameTime);
+                break;
+            case GameState.Intermission:
+                intermissionTimer.StartTimer(intermissionTime);
+                break;
+            case GameState.Ended:
+                endGameTimer.StartTimer(endGameTime);
+                break;
         }
-        else if (gameState.value == GameState.Playing)
-        {
-            // Reset the intermission timer
-            intermissionTimer = intermissionTime;
+    }
 
-            gameTimer -= Time.deltaTime;
+    private void OnStartTimerEnd()
+    {
+        if (!isServer)
+            return;
 
-            if (gameTimer <= 0 && isServer) 
-                gameState.value = GameState.Ended;
-        }
-        else if (gameState.value == GameState.Intermission)
-        {
-            intermissionTimer -= Time.deltaTime;
+        gameState.value = GameState.Playing;
+    }
 
-            if (intermissionTimer <= 0 && isServer) 
-                gameState.value = GameState.Playing;
-        }
+    private void OnIntermissionTimerEnd()
+    {
+        if (!isServer)
+            return;
+
+        gameState.value = GameState.Playing;
+    }
+
+    private void OnGameTimerEnd()
+    {
+        if (!isServer)
+            return;
+
+        gameState.value = GameState.Ended;
+    }
+
+    private void OnEndGameTimerEnd()
+    {
+        if (!isServer)
+            return;
+
+        gameState.value = GameState.Waiting;
     }
 
     public void OnGoalScored(TeamManager.Team team, PlayerID player)
@@ -92,13 +125,13 @@ public class GameStateManager : NetworkBehaviour
         switch (gameState.value)
         {
             case GameState.Starting:
-                return startingTimer;
+                return startingTimer.remaining;
             case GameState.Playing:
-                return gameTimer;
+                return gameTimer.remaining;
             case GameState.Intermission:
-                return intermissionTimer;
+                return intermissionTimer.remaining;
             case GameState.Ended:
-                return endGameTimer;
+                return endGameTimer.remaining;
             default:
                 return 0;
         }
