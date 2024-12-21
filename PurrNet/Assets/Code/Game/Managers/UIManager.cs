@@ -32,15 +32,18 @@ public class UIManager : MonoBehaviour
             case GameStateManager.GameState.Playing:
                 gameStateText.text = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
                 break;
+            case GameStateManager.GameState.Intermission:
+                gameStateText.text = string.Format("{0:00}:{1:00}", timeSpan.Minutes, timeSpan.Seconds);
+                break;
             case GameStateManager.GameState.Ended:
                 gameStateText.text = "Game over!";
                 break;
         }
     }
 
-    private void OnTeamScoresChanged(SyncDictionaryChange<TeamManager.Team, int> change)
+    private void OnTeamScoresChanged(SyncDictionaryChange<Team, int> change)
     {
-        scoreText.SetText($"<Color=red>{teamManager.GetTeamScore(TeamManager.Team.Red)}</color> : <color=lightblue>{teamManager.GetTeamScore(TeamManager.Team.Blue)}</color>");
+        scoreText.SetText($"<Color=red>{teamManager.GetTeamScore(Team.Red)}</color> : <color=lightblue>{teamManager.GetTeamScore(Team.Blue)}</color>");
     }
 
     private void OnGameStateChanged(GameStateManager.GameState state)

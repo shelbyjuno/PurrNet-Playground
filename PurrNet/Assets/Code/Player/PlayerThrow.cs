@@ -17,6 +17,16 @@ public class PlayerThrow : NetworkBehaviour
         currentBall.onChanged += ball => ballModel.SetActive(ball != null);
     }
 
+    protected override void OnSpawned(bool asServer)
+    {
+        base.OnSpawned(asServer);
+
+        Team team = GameManager.Instance.TeamManager.GetPlayerTeam(owner.Value);
+        
+        ballModel.transform.GetChild(0).gameObject.SetActive(team == Team.Red);
+        ballModel.transform.GetChild(1).gameObject.SetActive(team == Team.Blue);
+    }
+
     void Update()
     {
         if (Mouse.current.leftButton.wasPressedThisFrame && currentBall.value != null)

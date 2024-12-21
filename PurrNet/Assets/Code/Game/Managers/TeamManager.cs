@@ -3,9 +3,10 @@ using PurrNet;
 using PurrNet.Modules;
 using UnityEngine;
 
+public enum Team { Red, Blue }
+
 public class TeamManager : NetworkBehaviour
 {
-    public enum Team { Red, Blue }
     public SyncDictionary<PlayerID, Team> playerTeams = new SyncDictionary<PlayerID, Team>();
     public SyncDictionary<Team, int> teamScores = new SyncDictionary<Team, int>();
 

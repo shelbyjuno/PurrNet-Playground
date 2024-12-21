@@ -47,9 +47,9 @@ public class SpawnManager : NetworkBehaviour
     {
         foreach (PlayerID playerID in gameManager.GetAllPlayers())
         {
-            TeamManager.Team team = teamManager.GetPlayerTeam(playerID);
+            Team team = teamManager.GetPlayerTeam(playerID);
 
-            var teamSpawnSide = team == TeamManager.Team.Red ? -11.5f : 11.5f;
+            var teamSpawnSide = team == Team.Red ? -11.5f : 11.5f;
             var spawnPos = new Vector3(UnityEngine.Random.Range(-5, 5), 1.5f, teamSpawnSide);
             var center = new Vector3(0, 1f, 0);
     

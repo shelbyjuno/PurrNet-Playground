@@ -104,7 +104,7 @@ public class GameStateManager : NetworkBehaviour
         gameState.value = GameState.Waiting;
     }
 
-    public void OnGoalScored(TeamManager.Team team, PlayerID player)
+    public void OnGoalScored(Team team, PlayerID player)
     {
         Debug.Log($"Goal scored by {team} team!");
 

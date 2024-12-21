@@ -17,8 +17,8 @@ public class Ball : NetworkBehaviour
 
     SyncVar<BallState> state = new SyncVar<BallState>(BallState.Grounded);
 
-    private PlayerThrow currentOwner;
-    private PlayerThrow lastOwner;
+    private SyncVar<PlayerThrow> currentOwner = new SyncVar<PlayerThrow>();
+    private SyncVar<PlayerThrow> lastOwner = new SyncVar<PlayerThrow>();
     private bool canBePickedUpByLastOwner;
 
     void Awake()
@@ -39,9 +39,9 @@ public class Ball : NetworkBehaviour
     void Update()
     {
         // If the ball is owned by a player, hover it over them
-        if (currentOwner)
+        if (currentOwner.value)
         {
-            transform.position = currentOwner.transform.position + ballVisualOffset;
+            transform.position = currentOwner.value.transform.position + ballVisualOffset;
         }
     }
 
@@ -53,6 +53,10 @@ public class Ball : NetworkBehaviour
                 // Enable mesh renderers
                 foreach (var mesh in meshRenderers)
                     mesh.enabled = true;
+                // Set the ball to the correct team color
+                Team team = GameManager.Instance.TeamManager.GetPlayerTeam(lastOwner.value.owner.Value);
+                meshRenderers[0].gameObject.SetActive(team == Team.Red);
+                meshRenderers[1].gameObject.SetActive(team == Team.Blue);
                 break;
             case BallState.Held:
                 // Disable mesh renderers
@@ -70,7 +74,7 @@ public class Ball : NetworkBehaviour
     [ServerRpc(requireOwnership: false)]
     void CmdThrow(PlayerThrow playerThrow, Vector3 origin, Vector3 direction, float force)
     {
-        if(currentOwner != playerThrow)
+        if(currentOwner.value!= playerThrow)
             return;
         
         rb.isKinematic = false;
@@ -81,7 +85,7 @@ public class Ball : NetworkBehaviour
         transform.position = origin;
         rb.AddForce(direction * force, ForceMode.Impulse);
 
-        currentOwner = null;
+        currentOwner.value = null;
 
         playerThrow.SetBall(null);
 
@@ -98,10 +102,10 @@ public class Ball : NetworkBehaviour
         if (!isServer) return;
 
         // Check for player
-        if (other.TryGetComponent(out PlayerThrow playerThrow) && currentOwner == null)
+        if (other.TryGetComponent(out PlayerThrow playerThrow) && currentOwner.value == null && other.CompareTag("Player"))
         {
             // Don't let the player pick up the ball right away if they threw it
-            if (lastOwner == playerThrow && !canBePickedUpByLastOwner)
+            if (lastOwner.value == playerThrow && !canBePickedUpByLastOwner)
                 return;
 
             ResetVelocity();
@@ -111,16 +115,21 @@ public class Ball : NetworkBehaviour
             foreach (var collider in colliders)
                 collider.enabled = false;
 
-            currentOwner = playerThrow;
-            lastOwner = playerThrow;
+            currentOwner.value= playerThrow;
+            lastOwner.value = playerThrow;
             canBePickedUpByLastOwner = false;
 
             playerThrow.SetBall(this);
 
             state.value = BallState.Held;
         }
-        else if (other.transform.root.TryGetComponent(out Goal goal) && currentOwner == null)
+        else if (other.transform.root.TryGetComponent(out Goal goal) && currentOwner.value== null && other.CompareTag("Goal"))
         {
+            ResetVelocity();
+
+            foreach (var collider in colliders)
+                collider.enabled = false;
+
             goal.Score(this);
         }
         else
@@ -137,5 +146,5 @@ public class Ball : NetworkBehaviour
         rb.angularVelocity = Vector3.zero;
     }
 
-    public PlayerID GetLastOwner() => lastOwner.owner.Value;
+    public PlayerID GetLastOwner() => lastOwner.value.owner.Value;
 }

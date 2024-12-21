@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4702064868928486472}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -74,7 +74,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 395136997617806297}
   playerSpeed: 5
+  dashSpeed: 16.666666
   jumpHeight: 2
+  drag: 6.6666665
   gravityValue: -9.81
 --- !u!114 &1982238240175135006
 MonoBehaviour:
@@ -407,8 +409,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 9193814354311342503}
   - {fileID: 4869040204926319462}
+  - {fileID: 9193814354311342503}
   m_Father: {fileID: 821099614930217472}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6975309315708660620
