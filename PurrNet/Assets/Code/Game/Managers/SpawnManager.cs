@@ -17,12 +17,7 @@ public class SpawnManager : NetworkBehaviour
 
     Ball currentBall;
 
-    void Awake()
-    {
-        gameStateManager.OnGameStateChanged.AddListener(OnGameStateChanged);
-    }
-
-    private void OnGameStateChanged(GameStateManager.GameState state)
+    public void OnGameStateChanged(GameStateManager.GameState state)
     {
         if (!isServer)
             return;
